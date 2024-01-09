@@ -118,6 +118,7 @@ git clone https://github.com/<SEU_USUARIO>/backend-dev-jan-2024.git
 Instale as dependências do projeto:
 
 ```
+docker compose up -d --build
 docker compose exec app composer install
 docker compose exec app npm install
 ```

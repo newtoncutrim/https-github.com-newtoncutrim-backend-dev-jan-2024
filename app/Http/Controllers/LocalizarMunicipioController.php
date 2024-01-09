@@ -17,7 +17,7 @@ class LocalizarMunicipioController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
 
-        $municipio = MunicipiosGeometria::whereRaw("ST_Contains(geom, ST_GeomFromText('POINT($longitude $latitude)', 4326))")
+        $municipio = MunicipiosGeometria::whereRaw("ST_DWithin(geom::geography, ST_GeomFromText('POINT($longitude $latitude)', 4326), 0.0001)")
             ->first();
 
         if (!$municipio) {
