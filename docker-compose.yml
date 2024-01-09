@@ -1,0 +1,82 @@
+version: "3.7"
+
+services:
+    # image project
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                - user=carlos
+                - uid=1000
+                - NODE_VERSION=14
+                - NPM_VERSION=7
+                - CURL_VERSION=latest
+                - INSTALL_NODE=true
+                - INSTALL_NPM=true
+                - INSTALL_CURL=true
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - /home/newton/Documentos/backend-dev-jan-2024:/var/www
+            - /home/newton/Documentos/backend-dev-jan-2024/db:/var/www/db
+        depends_on:
+            - redis
+        networks:
+            - laravel
+
+    # nginx
+    nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - "8989:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d/
+        networks:
+            - laravel
+
+    # db postgresql
+    db:
+        image: postgis/postgis:latest
+        restart: unless-stopped
+        environment:
+            POSTGRES_DB: ${DB_DATABASE:-terraq_teste}
+            POSTGRES_USER: ${DB_USERNAME:-postgres}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-root}
+        volumes:
+            - ./.docker/postgresql/data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
+        networks:
+            - laravel
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U postgres"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+
+    # queue
+    queue:
+        image: especializati/laravel9-app
+        restart: unless-stopped
+        command: "php artisan queue:work"
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - redis
+            - app
+        networks:
+            - laravel
+
+    # redis
+    redis:
+        image: redis:latest
+        networks:
+            - laravel
+
+networks:
+    laravel:
+        driver: bridge

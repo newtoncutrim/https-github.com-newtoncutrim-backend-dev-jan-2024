@@ -17,3 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// routes/web.php ou routes/api.php
+
+
+use App\Http\Controllers\PontosUsuarioController;
+use App\Http\Controllers\LocalizarMunicipioController;
+
+Route::post('/localizar', [LocalizarMunicipioController::class, 'localizarMunicipio']);
+
+Route::apiResource('/pontos', PontosUsuarioController::class);
