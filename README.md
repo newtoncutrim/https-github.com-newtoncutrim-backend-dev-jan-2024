@@ -6,6 +6,20 @@
  
 Repositório contendo as instruções do processo seletivo para Desenvolvedor Backend na TerraQ em Jan/24.
 
+# Desculpas e Esclarecimentos
+
+Gostaria de informar que, devido a circunstâncias inesperadas, tive um tempo bastante restrito para realizar o teste técnico. Infelizmente, só pude dedicar três horas ao desenvolvimento do projeto, o que impactou diretamente na qualidade do trabalho final.
+
+Dentre as limitações, destaco que não houve tempo suficiente para realizar testes adequados no código, tanto de funcionalidades quanto de integração. Apenas implementei o banco de dados e a imagem Docker às pressas, o que pode resultar em possíveis problemas não identificados.
+
+Além disso, todo o processo foi conduzido de forma apressada, o que pode ter impactado na qualidade geral do código e na organização da estrutura do projeto.
+
+Entendo a importância de entregar um trabalho completo e bem testado. Se tivesse mais tempo, poderia realizar testes mais abrangentes, refatorar o código, e garantir uma implementação mais robusta e segura.
+
+Caso seja possível, gostaria de solicitar um prazo adicional de dois dias para aprimorar o projeto, realizar testes mais detalhados e garantir que todas as funcionalidades estejam corretas.
+
+Agradeço pela compreensão e estou à disposição para discutir qualquer detalhe ou esclarecimento adicional.
+
 # Descrição e objetivos
 
 Este teste foi criado para avaliar suas habilidades no desenvolvimento de uma aplicação backend que integre funcionalidades geoespaciais. O objetivo é criar uma API que interaja com um banco de dados PostgreSQL com a extensão PostGIS, fornecendo endpoints para manipulação e consulta de dados geoespaciais.
@@ -104,14 +118,14 @@ git clone https://github.com/<SEU_USUARIO>/backend-dev-jan-2024.git
 Instale as dependências do projeto:
 
 ```
-composer install
-npm install
+docker compose exec app composer install
+docker compose exec app npm install
 ```
 
 Depois copie o arquivo `.env.example` para `.env`:
 
 ```
-cp .env.example .env
+docker compose exec app cp .env.example .env
 ```
 
 Crie um banco de dados temporário para a aplicação com o comando abaixo (ou crie-o manualmente, se preferir):
@@ -123,21 +137,30 @@ sudo -u postgres psql -c "CREATE DATABASE terraq_teste"
 Depois, gere a chave da aplicação:
 
 ```
-php artisan key:generate
+docker compose exec app php artisan key:generate
 ```
 
 Rode a migração para criar as tabelas no banco de dados:
 
 ```
-php artisan migrate
+docker compose exec app php artisan migrate
 ```
 
 E por fim, inicie o servidor local da Aplicação:
 
 ```
-php artisan serve
+docker compose exec app php artisan serve
 ```
 
-Acesse a aplicação em http://localhost:8000.
+Acesse a aplicação em http://localhost:8989.
 
-Este repositório utiliza Laravel 9, portanto, você pode consultar a documentação oficial em https://laravel.com/docs/9.x para mais informações.
+### .env
+```
+DB_CONNECTION=pgsql
+DB_HOST=db
+DB_PORT=5432
+DB_DATABASE=terraq_teste
+DB_USERNAME=postgres
+DB_PASSWORD=root
+```
+Este repositório utiliza Laravel 10, portanto, você pode consultar a documentação oficial em https://laravel.com/docs/9.x para mais informações.
